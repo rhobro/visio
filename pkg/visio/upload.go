@@ -1,22 +1,23 @@
 package visio
 
 import (
+	"github.com/rhobro/visio/internal/fv"
 	"io"
 	"math/rand"
 	"os"
 	"strings"
-	"visio/internal/fv"
 )
 
-func Upload(r *io.Reader, id string) (string, error) {
+func Upload(r io.Reader, id string) (string, error) {
 	uploader, err := fv.New()
 	if err != nil {
 		return "", err
 	}
 
+	// upload data
 	asset, err := uploader.Upload(&fv.Params{
 		Body: r,
-		ID: id,
+		ID:   id,
 	})
 	if err != nil {
 		return "", err
@@ -31,17 +32,15 @@ func UploadFile(path string) (string, error) {
 		return "", err
 	}
 	defer f.Close()
-
-	var rd io.Reader = f
-	return Upload(&rd, id())
+	return Upload(f, randID())
 }
 
 const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func id() string {
+func randID() string {
 	id := strings.Builder{}
 
-	for i := 0; i < 10 + rand.Intn(10); i++ {
+	for i := 0; i < 10+rand.Intn(10); i++ {
 		id.WriteByte(chars[rand.Intn(len(chars))])
 	}
 

@@ -8,12 +8,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/rhobro/goutils/pkg/httputil"
 	"io"
-	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"path/filepath"
+	"path"
 	"rogchap.com/v8go"
 	"strconv"
 	"strings"
@@ -36,7 +35,7 @@ func New() (*FV, error) {
 	var auth string
 
 	// get auth key
-	rq, _ := http.NewRequest("GET", fvURL, nil)
+	rq, _ := http.NewRequest(http.MethodGet, fvURL, nil)
 	rq.Header.Set("User-Agent", httputil.RandUA())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
@@ -51,8 +50,8 @@ func New() (*FV, error) {
 	// find index.js file
 	page.Find(`link[rel="preload"][as="script"]`).Each(func(_ int, sl *goquery.Selection) {
 		href := sl.AttrOr("href", "")
-		if filepath.Base(href) == "index.js" {
-			rq, _ := http.NewRequest("GET", fvURL+href, nil)
+		if path.Base(href) == "index.js" {
+			rq, _ := http.NewRequest(http.MethodGet, fvURL+href, nil)
 			rq.Header.Set("User-Agent", httputil.RandUA())
 			rsp, err := http.DefaultClient.Do(rq)
 			if err != nil {
@@ -60,7 +59,7 @@ func New() (*FV, error) {
 				return
 			}
 			defer rsp.Body.Close()
-			bd, err := ioutil.ReadAll(rsp.Body)
+			bd, err := io.ReadAll(rsp.Body)
 			if err != nil {
 				log.Print(err)
 				return
@@ -93,9 +92,11 @@ func New() (*FV, error) {
 	}, nil
 }
 
+// Upload io.Reader in Params
+// Returns an Asset object with upload details
 func (fv *FV) Upload(up *Params) (*Asset, error) {
 	// get url from Asset
-	rq, _ := http.NewRequest("POST", assetURL, nil)
+	rq, _ := http.NewRequest(http.MethodPost, assetURL, nil)
 	rq.Header.Set("User-Agent", httputil.RandUA())
 	rq.Header.Set("Authorization", fv.auth)
 	rsp, err := http.DefaultClient.Do(rq)
@@ -103,7 +104,7 @@ func (fv *FV) Upload(up *Params) (*Asset, error) {
 		return nil, err
 	}
 	defer rsp.Body.Close()
-	bd, err := ioutil.ReadAll(rsp.Body)
+	bd, err := io.ReadAll(rsp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -132,6 +133,7 @@ func (fv *FV) Upload(up *Params) (*Asset, error) {
 	return fv.waitAsset()
 }
 
+// Performs raw chunking and uploading with mpart
 func (fv *FV) upload(up *Params) error {
 	// upload parameters
 	params := uploadParams{
@@ -146,8 +148,8 @@ func (fv *FV) upload(up *Params) error {
 	buf := &bytes.Buffer{}
 	mPart := multipart.NewWriter(buf)
 
-	file, _ := mPart.CreateFormFile("file", up.ID + ".mp4")
-	size, err := io.Copy(file, *up.Body)
+	file, _ := mPart.CreateFormFile("file", up.ID+".mp4")
+	size, err := io.Copy(file, up.Body)
 	if err != nil {
 		return err
 	}
@@ -217,7 +219,7 @@ func (fv *FV) upload(up *Params) error {
 	}
 	u.RawQuery = params.values().Encode()
 
-	rq, _ := http.NewRequest("POST", u.String(), buf)
+	rq, _ := http.NewRequest(http.MethodPost, u.String(), buf)
 	rq.Header.Add("Content-Type", mPart.FormDataContentType())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
@@ -228,8 +230,9 @@ func (fv *FV) upload(up *Params) error {
 	return nil
 }
 
+// checks if upload errored
 func (fv *FV) isErrored() (bool, error) {
-	rq, _ := http.NewRequest("GET", "https://file.video/api/upload/"+fv.asset.ID, nil)
+	rq, _ := http.NewRequest(http.MethodGet, "https://file.video/api/upload/"+fv.asset.ID, nil)
 	rq.Header.Set("User-Agent", httputil.RandUA())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
@@ -244,7 +247,7 @@ func (fv *FV) isErrored() (bool, error) {
 			Errors bool
 		}
 	}
-	bd, err := ioutil.ReadAll(rsp.Body)
+	bd, err := io.ReadAll(rsp.Body)
 	if err != nil {
 		return false, err
 	}
@@ -256,20 +259,21 @@ func (fv *FV) isErrored() (bool, error) {
 	return !status.Upload.Status && status.Upload.Errors, nil
 }
 
+// Wait until asset is prepared in the background. Returns the Asset information when ready
 func (fv *FV) waitAsset() (*Asset, error) {
 	var assets struct {
 		Asset Asset
 	}
 
 	for !assets.Asset.Ready {
-		rq, _ := http.NewRequest("GET", "https://file.video/api/asset/"+fv.asset.ID, nil)
+		rq, _ := http.NewRequest(http.MethodGet, "https://file.video/api/asset/"+fv.asset.ID, nil)
 		rq.Header.Set("User-Agent", httputil.RandUA())
 		rsp, err := http.DefaultClient.Do(rq)
 		if err != nil {
 			return nil, err
 		}
 
-		bd, err := ioutil.ReadAll(rsp.Body)
+		bd, err := io.ReadAll(rsp.Body)
 		if err != nil {
 			return nil, err
 		}
