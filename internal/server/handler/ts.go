@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/rhobro/goutils/pkg/services/storaje"
-	"github.com/rhobro/visio/pkg/visio"
+	"github.com/rhobro/visio/internal/server/cache"
 	"io"
 	"net/http"
 	"strconv"
@@ -18,6 +16,7 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
+	id += ".json"
 	source, ok := params["source"]
 	if !ok || source == "" {
 		rw.WriteHeader(http.StatusNotFound)
@@ -35,28 +34,15 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// request
-	video, err := storaje.Download("videos", id+".json")
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	body, err := io.ReadAll(video)
+	// request, cached if possible
+	video, err := cache.LoadSource("videos", id)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// unmarshal into visio.Source
-	var src visio.Source
-	err = json.Unmarshal(body, &src)
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// request clip
-	rq, _ := http.NewRequest(http.MethodGet, src[source][n], nil)
+	// request segment
+	rq, _ := http.NewRequest(http.MethodGet, video.GetSegmentURL(source, n), nil)
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +50,7 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 	}
 	defer rsp.Body.Close()
 
-	// respond with clip
+	// respond with segment
 	rw.Header().Set("Content-Type", "video/MP2T")
 	_, err = io.Copy(rw, rsp.Body)
 	if err != nil {
