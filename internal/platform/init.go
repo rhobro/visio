@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/goutils/pkg/services/cfgcat"
 	"github.com/rhobro/goutils/pkg/services/storaje"
 	"log"
@@ -15,4 +16,6 @@ func Init() {
 	if err != nil {
 		log.Fatalf("unable to connect to Storj: %s", err)
 	}
+
+	fileio.Init("", "visio_server_*")
 }

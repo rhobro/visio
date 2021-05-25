@@ -6,7 +6,6 @@ import (
 	"github.com/rhobro/goutils/pkg/services/storaje"
 	"github.com/rhobro/visio/pkg/visio"
 	"io"
-	"log"
 	"net/http"
 	"path"
 )
@@ -35,7 +34,7 @@ func Add(rw http.ResponseWriter, rq *http.Request) {
 	}
 
 	// if data is JSON formatted correctly
-	var data visio.Source
+	var data visio.Video
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		rw.WriteHeader(http.StatusNotAcceptable)
@@ -51,13 +50,11 @@ func Add(rw http.ResponseWriter, rq *http.Request) {
 	// upload to Storj after formatting as minified JSON
 	refmt, err := json.Marshal(&data)
 	if err != nil {
-		log.Printf("marshaling JSON: %s", err)
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	err = storaje.Upload(bytes.NewReader(refmt), "videos", id)
 	if err != nil {
-		log.Printf("uploading to Storj: %s", err)
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}

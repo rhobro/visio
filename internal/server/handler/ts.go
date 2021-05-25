@@ -35,7 +35,7 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	// request, cached if possible
-	video, err := cache.LoadSource("videos", id)
+	video, err := cache.Video("videos", id)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return

@@ -13,6 +13,16 @@ const heightToWidth = 16. / 9.
 
 var m3u8Version = 3
 
+/*
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:1
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:1.149,
+1080p/0.ts
+#EXT-X-ENDLIST
+*/
+
 func RootM3U8(rw http.ResponseWriter, r *http.Request) {
 	// extract parameters
 	params := mux.Vars(r)
@@ -24,7 +34,7 @@ func RootM3U8(rw http.ResponseWriter, r *http.Request) {
 	id += ".json"
 
 	// request, cached if possible
-	video, err := cache.LoadSource("videos", id)
+	video, err := cache.Video("videos", id)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return

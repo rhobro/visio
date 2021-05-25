@@ -47,7 +47,7 @@ func main() {
 		fmt.Println(objs.Item().Key)
 	}
 
-	newP := make(visio.Source)
+	newP := make(visio.Video)
 
 	for _, pURL := range roots {
 		// request master root playlist
