@@ -4,9 +4,11 @@ import (
 	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/goutils/pkg/services/cfgcat"
 	"github.com/rhobro/goutils/pkg/services/storaje"
-	"github.com/rhobro/visio/internal/server/cache"
 	"log"
+	"os"
 )
+
+var Running = true
 
 func Init() {
 	cfgcat.Init("CR7ZCKLIe0OJIFp0hHbqsA/WKLihHgrhEiW-7xYfrz0Eg", false)
@@ -19,6 +21,12 @@ func Init() {
 	}
 
 	fileio.Init("", "visio_server_*")
+}
 
-	cache.Start()
+func Close() {
+	Running = false
+	cfgcat.C.Close()
+	storaje.C.Close()
+	fileio.Close()
+	os.Exit(0)
 }

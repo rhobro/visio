@@ -16,6 +16,7 @@
         <method importPath="os" receiver="*File" name="Close" />
         <method importPath="io" receiver="ReadCloser" name="Close" />
         <method importPath="mime/multipart" receiver="*Writer" name="Close" />
+        <method importPath="storj.io/uplink" receiver="*Project" name="Close" />
       </methods>
     </inspection_tool>
   </profile>

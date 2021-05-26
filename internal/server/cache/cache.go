@@ -2,6 +2,7 @@ package cache
 
 import (
 	"github.com/rhobro/goutils/pkg/fileio"
+	"github.com/rhobro/visio/internal/platform"
 	"log"
 	"os"
 	"time"
@@ -12,7 +13,7 @@ func Start() {
 }
 
 func manager() {
-	for {
+	for platform.Running {
 		// video data
 		for k, v := range videos {
 			if time.Now().Sub(v.t) >= lifetime {
@@ -27,7 +28,7 @@ func manager() {
 		// check total cache size
 		size, err := fileio.DirSize(fileio.TmpDir)
 		if err != nil {
-			log.Fatalf("cannot compute size of %s: %s", fileio.TmpDir, err)
+			log.Fatalf("can't compute size of %s: %s", fileio.TmpDir, err)
 		}
 		if size > maxCacheStorage {
 			// calculate amount required to shed
