@@ -6,6 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/etherlabsio/go-m3u8 v0.1.2
 	github.com/gorilla/mux v1.8.0
-	github.com/rhobro/goutils v1.6.3
+	github.com/rhobro/goutils v1.6.4
+	github.com/vansante/go-ffprobe v1.1.0
 	rogchap.com/v8go v0.6.0
 )

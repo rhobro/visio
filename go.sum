@@ -165,8 +165,8 @@ github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINE
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
-github.com/rhobro/goutils v1.6.3 h1:AHkvZknnISXV2V+chbZ4FRpUdWCicZW68YqdC2ePWAI=
-github.com/rhobro/goutils v1.6.3/go.mod h1:BSDKn8kgeQnWuXdtEg+XIjojql887oLIjcgGyx2sY+A=
+github.com/rhobro/goutils v1.6.4 h1:KrfuEOYs9xwtHxI16ZeAtL+vAIUvRxDolKI2KHsN6rU=
+github.com/rhobro/goutils v1.6.4/go.mod h1:BSDKn8kgeQnWuXdtEg+XIjojql887oLIjcgGyx2sY+A=
 github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR/rfWxYHBV53g=
 github.com/ryanuber/columnize v2.1.0+incompatible/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
 github.com/schollz/closestmatch v2.1.0+incompatible/go.mod h1:RtP1ddjLong6gTkbtmuhtR2uUrrJOpYzYRvbcPAid+g=
@@ -203,6 +203,8 @@ github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyC
 github.com/valyala/fasthttp v1.6.0/go.mod h1:FstJa9V+Pj9vQ7OJie2qMHdwemEDaDiSdBnvPM1Su9w=
 github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a/go.mod h1:v3UYOV9WzVtRmSR+PDvWpU/qWl4Wa5LApYYX4ZtKbio=
+github.com/vansante/go-ffprobe v1.1.0 h1:Tz5X+38tF8YYEFVz+PUTrtvlED35IorB7XI0USOqZWU=
+github.com/vansante/go-ffprobe v1.1.0/go.mod h1:AEIxsTWYTTeXpel90yu5J/QxuDWNaKCO50xRBN4rdac=
 github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3 h1:zMsHhfK9+Wdl1F7sIKLyx3wrOFofpb3rWFbA4HgcK5k=
 github.com/vivint/infectious v0.0.0-20200605153912-25a574ae18a3/go.mod h1:R0Gbuw7ElaGSLOZUSwBm/GgVwMd30jWxBDdAyMOeTuc=
 github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f/go.mod h1:N2zxlSyiKSe5eX1tZViRH5QA0qijqEDrYZiPEAiq3wU=

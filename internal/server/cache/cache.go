@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func init() {
+func Start() {
 	go manager()
 }
 
@@ -27,18 +27,17 @@ func manager() {
 		// check total cache size
 		size, err := fileio.DirSize(fileio.TmpDir)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("cannot compute size of %s: %s", fileio.TmpDir, err)
 		}
 		if size > maxCacheStorage {
 			// calculate amount required to shed
 			delta := size - maxCacheStorage
 
-			sMu.Lock()
-
 			// prune until delta < 0
 			for delta > 0 {
 				// find oldest file
 				oldestKey := ""
+
 				for k, v := range segments {
 					if oldestKey == "" {
 						oldestKey = k
@@ -54,18 +53,19 @@ func manager() {
 				// size file
 				stat, err := os.Stat(segments[oldestKey].file)
 				if err != nil {
-					log.Fatal(err)
+					log.Fatalf("can't measure stats of %s: %s", segments[oldestKey].file, err)
 				}
 				delta -= stat.Size()
 
 				// delete cache entry and file
+				sMu.Lock()
 				err = os.Remove(segments[oldestKey].file)
 				if err != nil {
-					log.Fatal(err)
+					log.Fatalf("can't remove %s: %s", segments[oldestKey].file, err)
 				}
 				delete(segments, oldestKey)
+				sMu.Unlock()
 			}
-			sMu.Unlock()
 		}
 	}
 }

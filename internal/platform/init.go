@@ -4,6 +4,7 @@ import (
 	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/goutils/pkg/services/cfgcat"
 	"github.com/rhobro/goutils/pkg/services/storaje"
+	"github.com/rhobro/visio/internal/server/cache"
 	"log"
 )
 
@@ -18,4 +19,6 @@ func Init() {
 	}
 
 	fileio.Init("", "visio_server_*")
+
+	cache.Start()
 }
