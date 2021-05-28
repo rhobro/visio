@@ -43,7 +43,7 @@ func Video(bucket, id string) (*visio.Video, error) {
 		return nil, err
 	}
 
-	// unmarshal into visio.Video
+	// unmarshal into visiod.Video
 	src := new(visio.Video)
 	err = json.Unmarshal(body, src)
 	if err != nil {

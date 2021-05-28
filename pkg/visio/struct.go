@@ -7,19 +7,30 @@ import (
 
 type Video map[string][]string
 
-func (s *Video) GetSource(src string) []string {
-	return (*s)[src]
+func (v *Video) Sources() []string {
+	sources := make([]string, len(*v), len(*v))
+
+	var i int
+	for k := range *v {
+		sources[i] = k
+		i++
+	}
+	return sources
 }
 
-func (s *Video) GetSegmentURL(src string, idx int) string {
-	if idx >= len((*s)[src]) {
+func (v *Video) Source(src string) []string {
+	return (*v)[src]
+}
+
+func (v *Video) SegmentURL(src string, idx int) string {
+	if idx >= len((*v)[src]) {
 		return ""
 	}
-	return (*s)[src][idx]
+	return (*v)[src][idx]
 }
 
-func (s *Video) IsValid() bool {
-	for res, urls := range *s {
+func (v *Video) IsValid() bool {
+	for res, urls := range *v {
 		// check keys are names of .m3u8 files
 		if !(strings.Contains(res, ".m3u8") && len(res) > 5) {
 			return false

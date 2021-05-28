@@ -1,10 +1,7 @@
 package cache
 
 import (
-	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/visio/internal/platform"
-	"log"
-	"os"
 	"time"
 )
 
@@ -26,7 +23,7 @@ func manager() {
 
 		// segment cache
 		// check total cache size
-		size, err := fileio.DirSize(fileio.TmpDir)
+		/*size, err := fileio.DirSize(fileio.TmpDir)
 		if err != nil {
 			log.Fatalf("can't compute size of %s: %s", fileio.TmpDir, err)
 		}
@@ -67,6 +64,6 @@ func manager() {
 				delete(segments, oldestKey)
 				sMu.Unlock()
 			}
-		}
+		}*/
 	}
 }

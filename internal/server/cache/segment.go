@@ -1,3 +1,5 @@
+// currently disabling caching
+
 package cache
 
 import (
@@ -46,7 +48,7 @@ func Segment(bucket, id, source string, i int) (io.Reader, error) {
 		return nil, err
 	}
 	// request segment
-	rq, _ := http.NewRequest(http.MethodGet, video.GetSegmentURL(source+".m3u8", i), nil)
+	rq, _ := http.NewRequest(http.MethodGet, video.SegmentURL(source+".m3u8", i), nil)
 	rq.Header.Set("User-Agent", httputil.RandUA())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
@@ -54,13 +56,13 @@ func Segment(bucket, id, source string, i int) (io.Reader, error) {
 	}
 
 	// add to cache process
-	cacheStream <- cacheItem{
+	/*cacheStream <- cacheItem{
 		key:    key,
 		bucket: bucket,
 		id:     id,
 		source: source,
 		i:      i,
-	}
+	}*/
 
 	return rsp.Body, err
 }
@@ -78,7 +80,7 @@ type cacheItem struct {
 }
 
 func init() {
-	go cacher()
+	//go cacher()
 }
 
 func cacher() {
@@ -89,7 +91,7 @@ func cacher() {
 			continue
 		}
 		// request segment
-		rq, _ := http.NewRequest(http.MethodGet, video.GetSegmentURL(item.source+".m3u8", item.i), nil)
+		rq, _ := http.NewRequest(http.MethodGet, video.SegmentURL(item.source+".m3u8", item.i), nil)
 		rq.Header.Set("User-Agent", httputil.RandUA())
 		rsp, err := http.DefaultClient.Do(rq)
 		if err != nil {
