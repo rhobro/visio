@@ -20,10 +20,10 @@ func init() {
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/add", handler.Add)
-	r.HandleFunc("/{id}/root.m3u8", handler.RootM3U8)
-	r.HandleFunc("/{id}/{source}.m3u8", handler.SourceM3U8)
-	r.HandleFunc("/{id}/{source}/{n}.ts", handler.TS)
+	r.HandleFunc("/upload", handler.Add)
+	r.HandleFunc("/{id}/root.m3u8", handler.Master)
+	r.HandleFunc("/{id}/{src}.m3u8", handler.Playlist)
+	r.HandleFunc("/{id}/{src}/{n}.ts", handler.Segment)
 
 	// wait to stop
 	go quitter()

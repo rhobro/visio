@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/etherlabsio/go-m3u8/m3u8"
 	"github.com/rhobro/goutils/pkg/httputil"
-	"github.com/rhobro/goutils/pkg/services/storaje"
 	"github.com/rhobro/visio/internal/platform"
 	"github.com/rhobro/visio/pkg/visio"
 	"log"
@@ -40,11 +39,6 @@ func main() {
 		"https://demuxipfsrevproxy.onrender.com/ipfs/bafybeicxplvwbjeb2fxndla73h72ais4554mp2g2kp22rebfjwur7acfje/root.m3u8",
 		"https://demuxipfsrevproxy.onrender.com/ipfs/bafybeid7dcxplhfsuitqvczo4pciiqumjwdn3ah2waboz63cekercinjri/root.m3u8",
 		"https://demuxipfsrevproxy.onrender.com/ipfs/bafybeib2apxj2sptnnf5o3fjst7hwolqkdtypnrfoej26uyl4bb3yvxtzi/root.m3u8",
-	}
-
-	objs := storaje.ListObjects("videos")
-	for objs.Next() {
-		fmt.Println(objs.Item().Key)
 	}
 
 	newP := make(visio.Video)

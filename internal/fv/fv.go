@@ -81,6 +81,7 @@ func New() (*FV, error) {
 				log.Print(err)
 				return
 			}
+			ctx.Close()
 
 			// b64 encode + concat
 			auth = "Basic " + base64.StdEncoding.EncodeToString([]byte(val.String()))

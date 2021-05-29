@@ -8,7 +8,8 @@ import (
 	"strconv"
 )
 
-func TS(rw http.ResponseWriter, r *http.Request) {
+// Segment requests and returns the segment required
+func Segment(rw http.ResponseWriter, r *http.Request) {
 	// extract parameters
 	params := mux.Vars(r)
 	id, ok := params["id"]
@@ -16,8 +17,8 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
-	source, ok := params["source"]
-	if !ok || source == "" {
+	src, ok := params["src"]
+	if !ok || src == "" {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -32,17 +33,18 @@ func TS(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	seg, err := cache.Segment("videos", id, source, n)
+	seg, err := cache.Segment("videos", id, src, n)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer seg.Close()
 
 	// respond with segment
-	rw.Header().Set("Content-Type", "video/MP2T")
 	_, err = io.Copy(rw, seg)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	rw.Header().Set("Content-Type", "video/MP2T")
 }

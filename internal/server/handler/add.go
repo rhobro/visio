@@ -10,6 +10,7 @@ import (
 	"path"
 )
 
+// Add video and host on file.video
 func Add(rw http.ResponseWriter, rq *http.Request) {
 	if rq.Method != http.MethodPost {
 		rw.WriteHeader(http.StatusMethodNotAllowed)

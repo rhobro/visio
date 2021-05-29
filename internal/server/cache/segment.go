@@ -24,7 +24,7 @@ type segment struct {
 var sMu sync.RWMutex
 var segments = make(map[string]segment)
 
-func Segment(bucket, id, source string, i int) (io.Reader, error) {
+func Segment(bucket, id, source string, i int) (io.ReadCloser, error) {
 	key := filepath.Join(bucket, id, source, strconv.Itoa(i)+".ts")
 
 	// cached?
@@ -112,6 +112,7 @@ func cacher() {
 		if err != nil {
 			continue
 		}
+		rsp.Body.Close()
 		f.Close()
 
 		// cache path in segments
