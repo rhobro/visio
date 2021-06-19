@@ -1,7 +1,6 @@
-package visio
+package fv
 
 import (
-	"github.com/rhobro/visio/internal/fv"
 	"io"
 	"math/rand"
 	"os"
@@ -9,13 +8,13 @@ import (
 )
 
 func Upload(r io.Reader, id string) (string, error) {
-	uploader, err := fv.New()
+	uploader, err := New()
 	if err != nil {
 		return "", err
 	}
 
 	// upload data
-	asset, err := uploader.Upload(&fv.Params{
+	asset, err := uploader.Upload(&Params{
 		Body: r,
 		ID:   id,
 	})
