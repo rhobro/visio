@@ -38,7 +38,12 @@ func Master(rw http.ResponseWriter, r *http.Request) {
 	// add sources for each resolution
 	programID := "0"
 	for res := range *video {
-		height, _ := strconv.Atoi(res[:strings.Index(res, ".")-1])
+		resIdx := strings.Index(res, "p")
+		var height int
+		if resIdx != -1 {
+			height, err = strconv.Atoi(res[:strings.Index(res, "p")])
+		}
+
 		bandwidth := 4000000
 		switch height {
 		case 1080:
