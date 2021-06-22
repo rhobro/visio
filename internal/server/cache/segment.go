@@ -43,26 +43,17 @@ func Segment(bucket, id, source string, i int) (io.ReadCloser, error) {
 	sMu.RUnlock()
 
 	// get video data
-	video, err := Video("videos", id+".json")
+	video, err := Video("videos", id)
 	if err != nil {
 		return nil, err
 	}
 	// request segment
-	rq, _ := http.NewRequest(http.MethodGet, video.SegmentURL(source+".m3u8", i), nil)
+	rq, _ := http.NewRequest(http.MethodGet, video.SegmentURL(source, i), nil)
 	rq.Header.Set("User-Agent", httputil.RandUA())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {
 		return nil, err
 	}
-
-	// add to cache process
-	/*cacheStream <- cacheItem{
-		key:    key,
-		bucket: bucket,
-		id:     id,
-		source: source,
-		i:      i,
-	}*/
 
 	return rsp.Body, err
 }

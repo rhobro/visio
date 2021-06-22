@@ -34,7 +34,7 @@ func Video(bucket, id string) (*visio.Video, error) {
 	vMu.RUnlock()
 
 	// not found - must download
-	vid, err := storaje.Download("videos", id)
+	vid, err := storaje.Download("videos", id+".json")
 	if err != nil {
 		return nil, err
 	}

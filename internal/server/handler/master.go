@@ -22,7 +22,6 @@ func Master(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
-	id += ".json"
 
 	// request, cached if possible
 	video, err := cache.Video("videos", id)
@@ -62,7 +61,7 @@ func Master(rw http.ResponseWriter, r *http.Request) {
 			},
 			Bandwidth: bandwidth,
 
-			URI: res,
+			URI: res + ".m3u8",
 		})
 	}
 
