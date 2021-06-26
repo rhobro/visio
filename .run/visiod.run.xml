@@ -6,6 +6,7 @@
         <package value="github.com/rhobro/visio/cmd/visiod"/>
         <directory value="$PROJECT_DIR$"/>
         <filePath value="$PROJECT_DIR$/cmd/visiod/main.go"/>
+        <output_directory value="$PROJECT_DIR$/bin"/>
         <method v="2"/>
     </configuration>
 </component>

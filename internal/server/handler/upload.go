@@ -3,21 +3,24 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/goutils/pkg/services/storaje"
 	"github.com/rhobro/visio/internal/fv"
+	"github.com/rhobro/visio/pkg/mp4"
+	"io"
 	"net/http"
+	"os"
 	"path"
+	"path/filepath"
 )
+
+const chunkSizeKBs = 30000
 
 // Upload video and host on file.video
 func Upload(rw http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		rw.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
+	// is ID present and if ID already been used
 	id := r.Header.Get("ID")
-	if id == "" {
+	if fv.IdExists(id) {
 		rw.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
@@ -28,15 +31,52 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// order of m3u8 files
-	var roots []string
+	dir, err := fileio.TmpPath(id)
+	videoPath := filepath.Join(dir, "video.mp4")
 
-	m3u8URL, err := fv.Upload(r.Body, id)
+	// save file in temp directory
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	roots = append(roots, m3u8URL)
+	f, err := os.Create(videoPath)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, err = io.Copy(f, r.Body)
+	f.Close()
+
+	// split
+	err = mp4.Split(videoPath, chunkSizeKBs)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	// delete original
+	err = os.Remove(videoPath)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// order of m3u8 files
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	var roots []string
+
+	// loop through each file and upload
+	for _, entry := range files {
+		m3u8URL, err := fv.Upload(r.Body, id)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		roots = append(roots, m3u8URL)
+	}
 
 	// visify into visio compatible
 	video, err := fv.Visify(roots)

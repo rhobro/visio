@@ -1,9 +1,25 @@
 package fv
 
 import (
+	"github.com/rhobro/goutils/pkg/services/storaje"
 	"net/url"
 	"strconv"
 )
+
+func IdExists(id string) bool {
+	if id == "" {
+		return true
+	}
+
+	ids := storaje.ListObjects("videos")
+
+	for ids.Next() {
+		if ids.Item().Key == id+".json" {
+			return true
+		}
+	}
+	return false
+}
 
 // Asset successful upload details
 type Asset struct {
