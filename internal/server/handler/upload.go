@@ -32,13 +32,14 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	dir, err := fileio.TmpPath(id)
+	if r.Body == nil {
+		rw.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
+	err = os.MkdirAll(dir, 0700)
 	videoPath := filepath.Join(dir, "video.mp4")
 
 	// save file in temp directory
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
-	}
 	f, err := os.Create(videoPath)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -61,21 +62,32 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	// order of m3u8 files
+	// TODO dir list still includes original
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	var roots []string
 
 	// loop through each file and upload
 	for _, entry := range files {
-		m3u8URL, err := fv.Upload(r.Body, id)
+		// open file
+		f, err := os.Open(filepath.Join(dir, entry.Name()))
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		roots = append(roots, m3u8URL)
+
+		// upload file
+		root, err := fv.Upload(f, id)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		roots = append(roots, root)
 	}
 
 	// visify into visio compatible
