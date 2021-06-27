@@ -73,15 +73,8 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 
 	// loop through each file and upload
 	for _, entry := range files {
-		// open file
-		f, err := os.Open(filepath.Join(dir, entry.Name()))
-		if err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
 		// upload file
-		root, err := fv.Upload(f, id)
+		root, err := fv.UploadFile(filepath.Join(dir, entry.Name()))
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
