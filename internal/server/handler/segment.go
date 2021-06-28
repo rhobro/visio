@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/rhobro/visio/internal/server/cache"
+	"github.com/rhobro/visio/internal/server/res"
 	"io"
 	"net/http"
 	"strconv"
@@ -33,7 +33,7 @@ func Segment(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	seg, err := cache.Segment("videos", id, src, n)
+	seg, err := res.Segment(id, src, n)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return

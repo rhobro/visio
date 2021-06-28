@@ -221,6 +221,7 @@ func (fv *FV) upload(up *Params) error {
 	u.RawQuery = params.values().Encode()
 
 	rq, _ := http.NewRequest(http.MethodPost, u.String(), buf)
+	rq.Header.Add("User-Agent", httputil.RandUA())
 	rq.Header.Add("Content-Type", mPart.FormDataContentType())
 	rsp, err := http.DefaultClient.Do(rq)
 	if err != nil {

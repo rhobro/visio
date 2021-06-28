@@ -1,17 +1,22 @@
 package platform
 
 import (
+	configcat "github.com/configcat/go-sdk/v7"
 	"github.com/rhobro/goutils/pkg/fileio"
 	"github.com/rhobro/goutils/pkg/services/cfgcat"
 	"github.com/rhobro/goutils/pkg/services/storaje"
 	"log"
+	"net/http"
 	"os"
 )
 
 var Running = true
 
 func Init() {
-	cfgcat.Init("CR7ZCKLIe0OJIFp0hHbqsA/WKLihHgrhEiW-7xYfrz0Eg", false)
+	cfgcat.InitCustom(configcat.Config{
+		SDKKey:    "CR7ZCKLIe0OJIFp0hHbqsA/WKLihHgrhEiW-7xYfrz0Eg",
+		Transport: &http.Transport{},
+	}, false)
 
 	err := storaje.Init(
 		cfgcat.C.GetStringValue("storjSatellite", "", nil),
@@ -21,6 +26,12 @@ func Init() {
 	}
 
 	fileio.Init("", "visio_server_*")
+
+	// test
+	//u, _ := url.Parse("http://localhost:9090")
+	//http.DefaultTransport = &http.Transport{
+	//	Proxy: http.ProxyURL(u),
+	//}
 }
 
 func Close() {

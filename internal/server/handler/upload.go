@@ -62,7 +62,6 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	// order of m3u8 files
-	// TODO dir list still includes original
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -81,6 +80,13 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 		}
 
 		roots = append(roots, root)
+	}
+
+	// remove files
+	err = os.RemoveAll(dir)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// visify into visio compatible

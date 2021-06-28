@@ -7,7 +7,7 @@ import (
 	"github.com/etherlabsio/go-m3u8/m3u8"
 	"github.com/gorilla/mux"
 	"github.com/rhobro/goutils/pkg/httputil"
-	"github.com/rhobro/visio/internal/server/cache"
+	"github.com/rhobro/visio/internal/server/res"
 	"github.com/rhobro/visio/pkg/mp4"
 	"net/http"
 	"time"
@@ -32,7 +32,7 @@ func Playlist(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	// get video data
-	video, err := cache.Video("videos", id)
+	video, err := res.Video("videos", id)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return

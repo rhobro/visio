@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/rhobro/visio/internal/platform"
-	"github.com/rhobro/visio/internal/server/cache"
 	"github.com/rhobro/visio/internal/server/handler"
 	"log"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 
 func init() {
 	platform.Init()
-	cache.Start()
 }
 
 func main() {

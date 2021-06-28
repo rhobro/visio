@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/etherlabsio/go-m3u8/m3u8"
 	"github.com/gorilla/mux"
-	"github.com/rhobro/visio/internal/server/cache"
+	"github.com/rhobro/visio/internal/server/res"
 	"net/http"
 	"strconv"
 	"strings"
@@ -24,7 +24,7 @@ func Master(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	// request, cached if possible
-	video, err := cache.Video("videos", id)
+	video, err := res.Video("videos", id)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return

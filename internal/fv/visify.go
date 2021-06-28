@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Visify takes a list of m3u8 root URLs hosted on file.video and converts them
+// Visify takes a list of m3u8 root URLs hosted on file.res and converts them
 // into a visio.Video
 func Visify(roots []string) (*visio.Video, error) {
 	v := make(visio.Video)
