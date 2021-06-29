@@ -17,6 +17,7 @@ func init() {
 }
 
 func main() {
+	// TODO use fasthttp
 	r := mux.NewRouter()
 	r.HandleFunc("/upload", handler.Upload).Methods(http.MethodPost)
 	r.HandleFunc("/x/{id}/root.m3u8", handler.Master).Methods(http.MethodGet)

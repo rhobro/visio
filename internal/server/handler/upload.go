@@ -48,17 +48,25 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 	_, err = io.Copy(f, r.Body)
 	f.Close()
 
-	// split
-	err = mp4.Split(videoPath, chunkSizeKBs)
+	// if video is > 30MB
+	stats, err := os.Stat(videoPath)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	// delete original
-	err = os.Remove(videoPath)
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
+	if stats.Size() > 3e7 {
+		// split
+		err = mp4.Split(videoPath, chunkSizeKBs)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		// delete original
+		err = os.Remove(videoPath)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// order of m3u8 files
