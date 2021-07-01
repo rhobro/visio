@@ -17,15 +17,15 @@ func init() {
 }
 
 func main() {
+	// wait to stop
+	go quitter()
+	
 	// TODO use fasthttp
 	r := mux.NewRouter()
 	r.HandleFunc("/upload", handler.Upload).Methods(http.MethodPost)
 	r.HandleFunc("/x/{id}/root.m3u8", handler.Master).Methods(http.MethodGet)
 	r.HandleFunc("/x/{id}/{src}.m3u8", handler.Playlist).Methods(http.MethodGet)
 	r.HandleFunc("/x/{id}/{src}/{n}.ts", handler.Segment).Methods(http.MethodGet)
-
-	// wait to stop
-	go quitter()
 
 	err := http.ListenAndServe(":1580", r)
 	if err != nil {
