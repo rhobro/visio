@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 )
 
-const chunkSizeKBs = 30000
+const chunkSize = 3e7
 
 // Upload video and host on file.video
 func Upload(rw http.ResponseWriter, r *http.Request) {
@@ -56,7 +56,7 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 	}
 	if stats.Size() > 3e7 {
 		// split
-		err = mp4.Split(videoPath, chunkSizeKBs)
+		err = mp4.Split(videoPath, chunkSize / 1e3)
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
