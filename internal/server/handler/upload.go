@@ -54,7 +54,7 @@ func Upload(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if stats.Size() > 3e7 {
+	if stats.Size() > chunkSize {
 		// split
 		err = mp4.Split(videoPath, chunkSize / 1e3)
 		if err != nil {
